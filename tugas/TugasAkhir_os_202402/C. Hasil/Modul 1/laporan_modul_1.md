@@ -3,8 +3,8 @@
 
 **Mata Kuliah**: Sistem Operasi  
 **Semester**: Genap / Tahun Ajaran 2024–2025  
-**Nama**: Wahyu Tri Cahya  
-**NIM**: 240202889  
+**Nama**: abbi priyoguno 
+**NIM**: 240202848
 **Modul yang Dikerjakan**:  
 Modul 1 – System Call dan Instrumentasi Kernel  
 
