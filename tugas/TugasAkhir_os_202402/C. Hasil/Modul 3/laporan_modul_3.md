@@ -54,7 +54,7 @@ Child sees: Y
 Parent sees: X
 ```
 ### 📸 Screenshot:
-![hasil ptest](Screenshot_2025-07-26_212116.png)
+![hasil ptest](.Screenshot_2025-07-26_212116.png)
 
 ---
 
@@ -106,7 +106,7 @@ Child reads: A
 Parent reads: B
 ```
 ### 📸 Screenshot:
-![hasil ptest](Screenshot_2025-07-26_212116.png)
+![hasil ptest](.Screenshot_2025-07-26_212116.png)
 
 ---
 
