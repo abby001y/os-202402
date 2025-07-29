@@ -71,7 +71,7 @@ Write blocked as expected
 
 Jika ada screenshot:
 
-(.Screenshot 2025-07-26 212116.png)
+(Screenshot_2025-07-26_212116.png)
 ```
 
 ---
