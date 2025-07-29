@@ -1,97 +1,126 @@
-# 📝 Laporan Tugas Akhir
+# 📝 Laporan Tugas Akhir Sistem Operasi
 
-**Mata Kuliah**: Sistem Operasi
-**Semester**: Genap / Tahun Ajaran 2024–2025
-**Nama**: `<ABBI PRIYOGUNO>`
-**NIM**: `<240202848>`
-**Modul yang Dikerjakan**:
-`Modul 3 – Manajemen Memori Tingkat Lanjut (Copy-on-Write dan Shared Memory)
-`
+**Mata Kuliah**: Sistem Operasi  
+**Semester**: Genap / Tahun Ajaran 2024–2025  
+**Nama**: abbi priyoguno 
+**NIM**: 240202848
+**Modul yang Dikerjakan**:  
+Modul 3 – Manajemen Memori Lanjutan  
+(A. Copy-on-Write Fork, B. Shared Memory ala System V)
 
 ---
 
 ## 📌 Deskripsi Singkat Tugas
 
-Modul ini berfokus pada peningkatan efisiensi manajemen memori di sistem operasi xv6 dengan dua fitur utama:
+Tugas ini merupakan bagian dari Modul 3, yang berfokus pada implementasi fitur manajemen memori tingkat lanjut pada sistem operasi xv6, meliputi:
 
-Copy-on-Write (CoW):
-Optimalisasi fork() agar tidak menyalin seluruh memori proses anak, melainkan hanya menyalin saat terjadi penulisan (write) melalui page fault handler.
+- **A. Copy-on-Write (CoW) Fork**:  
+  Mengoptimalkan `fork()` agar tidak langsung menggandakan seluruh memori anak, melainkan menyalin halaman hanya saat proses menulis ke halaman tersebut.
 
-Shared Memory ala System V:
-Menambahkan system call shmget() dan shmrelease() untuk memungkinkan dua proses atau lebih berbagi satu halaman memori secara langsung, menggunakan pendekatan reference count.
-
-## 🛠️ Rincian Implementasi
-
-Copy-on-Write (CoW)
-Menambahkan array ref_count[] di vm.c untuk menghitung referensi per halaman fisik.
-Menambahkan fungsi incref() dan decref() untuk manajemen refcount dan kfree().
-Menambahkan flag PTE_COW di mmu.h.
-Membuat fungsi baru cowuvm() menggantikan copyuvm() di vm.c.
-Mengubah fork() di proc.c untuk menggunakan cowuvm() agar halaman tidak langsung disalin.
-Menangani page fault T_PGFLT di trap.c, dengan memeriksa flag PTE_COW dan melakukan salinan memori jika diperlukan.
----
-
-## ✅ Uji Fungsionalitas
-
-Program uji yang digunakan:
-
-cowtest.c: Menguji apakah perubahan pada anak tidak memengaruhi memori induk melalui mekanisme CoW.
-shmtest.c: Menguji berbagi memori antar proses melalui shmget() dan sinkronisasi konten memori.
-
-
-* `audit`: untuk melihat isi log system call (jika dijalankan oleh PID 1)
+- **B. Shared Memory ala System V**:  
+  Menyediakan fitur memori bersama antar proses menggunakan antarmuka mirip System V (`shmget`, `shmrelease`).
 
 ---
 
-## 📷 Hasil Uji
+## 🛠️ A. Implementasi Copy-on-Write Fork (CoW)
 
-Lampirkan hasil uji berupa screenshot atau output terminal. Contoh:
+### ✏️ Perubahan yang Dilakukan
 
-### 📍 Contoh Output `cowtest`:
+- Menambahkan bit flag `PTE_COW` di `mmu.h`
+- Membuat fungsi `cowuvm()` di `vm.c` untuk duplikasi page table CoW
+- Menyesuaikan `fork()` di `proc.c` untuk menggunakan `cowuvm`
+- Menangani page fault `T_PGFLT` di `trap.c` dengan memeriksa `PTE_COW`, mengalokasikan halaman baru jika perlu
+- Mengatur referensi dengan `incref()` dan `decref()` di `kalloc.c`
 
+### 🧪 Program Uji `cowtest.c`
+
+```c
+char *shm = (char*) shmget(42);
+shm[0] = 'X';
+
+if(fork() == 0){
+  shm[0] = 'Y';
+  printf(1, "Child sees: %c\n", shm[0]);
+  exit();
+} else {
+  wait();
+  printf(1, "Parent sees: %c\n", shm[0]);
+}
+```
+
+### ✅ Output:
 ```
 Child sees: Y
 Parent sees: X
+```
+### 📸 Screenshot:
+![hasil ptest](./screenshot/cowtest.png)
 
+---
+
+## 🛠️ B. Implementasi Shared Memory ala System V
+
+### ✏️ Perubahan yang Dilakukan
+
+- Menambahkan struktur `shmtab[]` di `vm.c`:
+  ```c
+  #define MAX_SHM 16
+  struct {
+    int key;
+    char *frame;
+    int refcount;
+  } shmtab[MAX_SHM];
+  ```
+
+- Menambahkan dua system call:
+  - `void* sys_shmget(int key)`
+  - `int sys_shmrelease(int key)`
+
+- Register syscall di:
+  - `syscall.h`, `user.h`, `usys.S`, `syscall.c`
+
+- Alamat shared memory dipetakan dari `USERTOP` ke bawah
+
+### 🧪 Program Uji `shmtest.c`
+
+```c
+char *shm = (char*) shmget(42);
+shm[0] = 'A';
+
+if(fork() == 0){
+  char *shm2 = (char*) shmget(42);
+  printf(1, "Child reads: %c\n", shm2[0]);
+  shm2[1] = 'B';
+  shmrelease(42);
+  exit();
+} else {
+  wait();
+  printf(1, "Parent reads: %c\n", shm[1]);
+  shmrelease(42);
+}
 ```
 
-### 📍 Contoh Output `shmtest`:
-
+### ✅ Output:
 ```
 Child reads: A
 Parent reads: B
-
 ```
-
-### 📍 Contoh Output `chmodtest`:
-
-```
-Write blocked as expected
-```
-
-Jika ada screenshot:
-
-(Screenshot_2025-07-26_212116.png)
-```
+### 📸 Screenshot:
+![hasil ptest](./screenshot/shmtest.png)
 
 ---
 
 ## ⚠️ Kendala yang Dihadapi
 
-Awalnya page fault tidak tertangani dengan benar karena lupa memeriksa flag PTE_COW.
-Beberapa panic terjadi karena lupa memanggil incref() pada kalloc().
-Salah mapping shared memory di luar batas USERTOP menyebabkan segmentation fault.
-Sistem belum membatasi jumlah maksimum shared memory per proses, berpotensi menimbulkan konflik alokasi.
+-Awalnya page fault tidak tertangani dengan benar karena lupa memeriksa flag 'PTE_COW'.
+-Beberapa panic terjadi karena lupa memanggil 'incref()' pada 'kalloc()'.
 
 ---
 
 ## 📚 Referensi
 
-Tuliskan sumber referensi yang Anda gunakan, misalnya:
-
-* Buku xv6 MIT: [https://pdos.csail.mit.edu/6.828/2018/xv6/book-rev11.pdf](https://pdos.csail.mit.edu/6.828/2018/xv6/book-rev11.pdf)
-* Repositori xv6-public: [https://github.com/mit-pdos/xv6-public](https://github.com/mit-pdos/xv6-public)
-* Stack Overflow, GitHub Issues, diskusi praktikum
+- [xv6-public - MIT](https://github.com/mit-pdos/xv6-public)
+- [Buku xv6 (MIT 6.828)](https://pdos.csail.mit.edu/6.828/2018/xv6/book-rev11.pdf)
+- Diskusi praktikum & Stack Overflow
 
 ---
-
