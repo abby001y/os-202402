@@ -2,43 +2,43 @@
 
 **Mata Kuliah**: Sistem Operasi
 **Semester**: Genap / Tahun Ajaran 2024–2025
-**Nama**: `<Nama Lengkap>`
-**NIM**: `<Nomor Induk Mahasiswa>`
+**Nama**: `<ABBI PRIYOGUNO>`
+**NIM**: `<240202848>`
 **Modul yang Dikerjakan**:
-`(Contoh: Modul 1 – System Call dan Instrumentasi Kernel)`
+`Modul 3 – Manajemen Memori Tingkat Lanjut (Copy-on-Write dan Shared Memory)
+`
 
 ---
 
 ## 📌 Deskripsi Singkat Tugas
 
-Tuliskan deskripsi singkat dari modul yang Anda kerjakan. Misalnya:
+Modul ini berfokus pada peningkatan efisiensi manajemen memori di sistem operasi xv6 dengan dua fitur utama:
 
-* **Modul 1 – System Call dan Instrumentasi Kernel**:
-  Menambahkan dua system call baru, yaitu `getpinfo()` untuk melihat proses yang aktif dan `getReadCount()` untuk menghitung jumlah pemanggilan `read()` sejak boot.
----
+Copy-on-Write (CoW):
+Optimalisasi fork() agar tidak menyalin seluruh memori proses anak, melainkan hanya menyalin saat terjadi penulisan (write) melalui page fault handler.
+
+Shared Memory ala System V:
+Menambahkan system call shmget() dan shmrelease() untuk memungkinkan dua proses atau lebih berbagi satu halaman memori secara langsung, menggunakan pendekatan reference count.
 
 ## 🛠️ Rincian Implementasi
 
-Tuliskan secara ringkas namun jelas apa yang Anda lakukan:
-
-### Contoh untuk Modul 1:
-
-* Menambahkan dua system call baru di file `sysproc.c` dan `syscall.c`
-* Mengedit `user.h`, `usys.S`, dan `syscall.h` untuk mendaftarkan syscall
-* Menambahkan struktur `struct pinfo` di `proc.h`
-* Menambahkan counter `readcount` di kernel
-* Membuat dua program uji: `ptest.c` dan `rtest.c`
+Copy-on-Write (CoW)
+Menambahkan array ref_count[] di vm.c untuk menghitung referensi per halaman fisik.
+Menambahkan fungsi incref() dan decref() untuk manajemen refcount dan kfree().
+Menambahkan flag PTE_COW di mmu.h.
+Membuat fungsi baru cowuvm() menggantikan copyuvm() di vm.c.
+Mengubah fork() di proc.c untuk menggunakan cowuvm() agar halaman tidak langsung disalin.
+Menangani page fault T_PGFLT di trap.c, dengan memeriksa flag PTE_COW dan melakukan salinan memori jika diperlukan.
 ---
 
 ## ✅ Uji Fungsionalitas
 
-Tuliskan program uji apa saja yang Anda gunakan, misalnya:
+Program uji yang digunakan:
 
-* `ptest`: untuk menguji `getpinfo()`
-* `rtest`: untuk menguji `getReadCount()`
-* `cowtest`: untuk menguji fork dengan Copy-on-Write
-* `shmtest`: untuk menguji `shmget()` dan `shmrelease()`
-* `chmodtest`: untuk memastikan file `read-only` tidak bisa ditulis
+cowtest.c: Menguji apakah perubahan pada anak tidak memengaruhi memori induk melalui mekanisme CoW.
+shmtest.c: Menguji berbagi memori antar proses melalui shmget() dan sinkronisasi konten memori.
+
+
 * `audit`: untuk melihat isi log system call (jika dijalankan oleh PID 1)
 
 ---
@@ -52,6 +52,7 @@ Lampirkan hasil uji berupa screenshot atau output terminal. Contoh:
 ```
 Child sees: Y
 Parent sees: X
+
 ```
 
 ### 📍 Contoh Output `shmtest`:
@@ -59,6 +60,7 @@ Parent sees: X
 ```
 Child reads: A
 Parent reads: B
+
 ```
 
 ### 📍 Contoh Output `chmodtest`:
@@ -70,18 +72,17 @@ Write blocked as expected
 Jika ada screenshot:
 
 ```
-![hasil cowtest](./screenshots/cowtest_output.png)
+![hasil cowtest](.Screenshot 2025-07-26 212116.png)
 ```
 
 ---
 
 ## ⚠️ Kendala yang Dihadapi
 
-Tuliskan kendala (jika ada), misalnya:
-
-* Salah implementasi `page fault` menyebabkan panic
-* Salah memetakan alamat shared memory ke USERTOP
-* Proses biasa bisa akses audit log (belum ada validasi PID)
+Awalnya page fault tidak tertangani dengan benar karena lupa memeriksa flag PTE_COW.
+Beberapa panic terjadi karena lupa memanggil incref() pada kalloc().
+Salah mapping shared memory di luar batas USERTOP menyebabkan segmentation fault.
+Sistem belum membatasi jumlah maksimum shared memory per proses, berpotensi menimbulkan konflik alokasi.
 
 ---
 
