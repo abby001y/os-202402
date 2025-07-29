@@ -71,8 +71,7 @@ Write blocked as expected
 
 Jika ada screenshot:
 
-```
-![hasil cowtest](.Screenshot 2025-07-26 212116.png)
+(.Screenshot 2025-07-26 212116.png)
 ```
 
 ---
