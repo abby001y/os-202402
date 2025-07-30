@@ -54,7 +54,8 @@ Child sees: Y
 Parent sees: X
 ```
 ### 📸 Screenshot:
-<img width="967" height="638" alt="Screenshot 2025-07-26 223317" src="https://github.com/user-attachments/assets/630ca9a8-9125-4919-bff1-5d2003e1ac6d" />
+<img width="964" height="617" alt="Screenshot 2025-07-26 212116" src="https://github.com/user-attachments/assets/3100da87-a45c-46a4-9faf-28140d604fc7" />
+
 
 
 
@@ -109,9 +110,9 @@ Child reads: A
 Parent reads: B
 ```
 ### 📸 Screenshot:
+<img width="964" height="617" alt="Screenshot 2025-07-26 212116" src="https://github.com/user-attachments/assets/94c0f548-a4c6-4331-93f9-972cb9528a90" />
 
----<img width="967" height="638" alt="Screenshot 2025-07-26 223317" src="https://github.com/user-attachments/assets/ed14b06c-ecdb-4973-a938-79a55f732386" />
-
+--
 
 ## ⚠️ Kendala yang Dihadapi
 
