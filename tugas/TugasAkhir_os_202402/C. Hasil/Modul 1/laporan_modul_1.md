@@ -43,9 +43,9 @@ Modul 1 – System Call dan Instrumentasi Kernel
 ```
 == Info Proses Aktif ==
 PID     MEM     NAME
-1       4096    init
-2       2048    sh
-3       2048    ptest
+1       12288    init
+2       16384   sh
+3       12288   ptest
 ```
 
 ### 📍 Contoh Output `rtest`:
