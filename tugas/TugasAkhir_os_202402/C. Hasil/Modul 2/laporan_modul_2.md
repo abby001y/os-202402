@@ -46,7 +46,8 @@ Parent selesai
 ```
 
 ### 📸 Screenshot:
-![hasil ptest](/ss/Screenshot_2025-07-18_143547.png)
+
+<img width="674" height="667" alt="Screenshot 2025-07-18 143547" src="https://github.com/user-attachments/assets/df166851-473a-485c-8cd0-2780a1b4b3e4" />
 
 ---
 
