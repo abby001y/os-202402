@@ -54,7 +54,10 @@ Child sees: Y
 Parent sees: X
 ```
 ### 📸 Screenshot:
-![hasil ptest](./ss/Screenshot_2025-07-26_212116.png)
+<img width="967" height="638" alt="Screenshot 2025-07-26 223317" src="https://github.com/user-attachments/assets/630ca9a8-9125-4919-bff1-5d2003e1ac6d" />
+
+
+
 
 ---
 
@@ -106,13 +109,14 @@ Child reads: A
 Parent reads: B
 ```
 ### 📸 Screenshot:
-![hasil ptest](.Screenshot/2025-07-26/212116.png)
 
----
+---<img width="967" height="638" alt="Screenshot 2025-07-26 223317" src="https://github.com/user-attachments/assets/ed14b06c-ecdb-4973-a938-79a55f732386" />
+
 
 ## ⚠️ Kendala yang Dihadapi
 
 -Awalnya page fault tidak tertangani dengan benar karena lupa memeriksa flag 'PTE_COW'.
+
 -Beberapa panic terjadi karena lupa memanggil 'incref()' pada 'kalloc()'.
 
 ---
