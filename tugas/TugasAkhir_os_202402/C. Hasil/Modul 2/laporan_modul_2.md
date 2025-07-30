@@ -46,7 +46,7 @@ Parent selesai
 ```
 
 ### 📸 Screenshot:
-![hasil ptest](Screenshot_2025-07-18_143547.png)
+![hasil ptest](/ss/Screenshot_2025-07-18_143547.png)
 
 ---
 
