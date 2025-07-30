@@ -54,7 +54,7 @@ Child sees: Y
 Parent sees: X
 ```
 ### 📸 Screenshot:
-![hasil ptest](.Screenshot/2025-07-26/212116.png)
+![hasil ptest](./ss/Screenshot_2025-07-26_212116.png)
 
 ---
 
